@@ -1,0 +1,14 @@
+#
+# For a description of the syntax of this configuration file,
+# see Documentation/kbuild/kconfig-language.txt.
+#
+config HELLO_A 
+       bool "A"  
+       default n 
+       help 
+               This is hello file A.
+config HELLO_B 
+       bool "B"  
+       default n 
+       help 
+               This is hello file B.

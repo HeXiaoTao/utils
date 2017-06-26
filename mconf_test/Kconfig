@@ -1,0 +1,15 @@
+#
+# For a description of the syntax of this configuration file,
+# see Documentation/kbuild/kconfig-language.txt.
+# 
+mainmenu "Kconfig Test"
+			   
+config HELLO_MAIN
+       bool "Main"  
+       default n 
+       help 
+               This is main file MAIN.
+
+menu "hello"
+source "hello/Kconfig"
+endmenu
