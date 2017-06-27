@@ -1,0 +1,6 @@
+#!/system/bin/sh
+
+base=/system
+export CLASSPATH=$base/framework/bp.jar
+exec app_process $base/bin com.android.commands.bp.Bp "$@"
+
