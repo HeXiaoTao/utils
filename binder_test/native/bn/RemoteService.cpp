@@ -38,7 +38,9 @@ RemoteService::~RemoteService()
 
 int RemoteService::callRemotePrint(const String16& message)
 {
-	ALOGI("callRemotePrint message:%s", message.string());
+	String8 _message(message);
+
+	ALOGI("callRemotePrint message:%s", _message.string());
 
 	return 0;
 }
