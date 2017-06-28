@@ -24,7 +24,8 @@ public class Bp {
         System.out.println("Bp run: " + remote);
         if(remote != null) {
             try {
-                remote.callRemotePrint("hello binder");
+				System.out.println("remote.callRemotePrint() ++ return: "
+						+ remote.callRemotePrint("hello binder"));
             } catch(RemoteException e) {
                 System.out.println("Bp run ERROR: " + e);
             }

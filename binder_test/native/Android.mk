@@ -33,3 +33,19 @@ LOCAL_SHARED_LIBRARIES := \
 	libkeystore_binder \
 	libremote
 include $(BUILD_EXECUTABLE)
+
+include $(CLEAR_VARS)
+LOCAL_CFLAGS := -Wall -Wextra -Werror -Wunused
+LOCAL_SRC_FILES := \
+	bp/main.cpp \
+	bp/Remote.cpp
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
+LOCAL_MODULE := bp_native
+LOCAL_REQUIRED_MODULES := libremote
+LOCAL_SHARED_LIBRARIES := \
+	libbinder \
+	liblog \
+	libutils \
+	libkeystore_binder \
+	libremote
+include $(BUILD_EXECUTABLE)
