@@ -5,7 +5,8 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := $(call all-subdir-java-files)
-LOCAL_SRC_FILES += src/com/android/commands/bp/IRemoteService.aidl
+LOCAL_SRC_FILES += src/com/android/commands/bp/IRemoteService.aidl \
+				   src/com/android/commands/bp/IRemoteServiceClient.aidl
 LOCAL_MODULE := bp
 include $(BUILD_JAVA_LIBRARY)
 

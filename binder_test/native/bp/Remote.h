@@ -15,21 +15,38 @@
 #include <utils/Errors.h>
 
 #include <IRemoteService.h>
+#include <IRemoteServiceClient.h>
+
+typedef void (*stateCallback_t)(int state);
 
 namespace android {
 
-class Remote
+class Remote :
+	public BnRemoteServiceClient,
+	public IBinder::DeathRecipient
 {
 public:
+	static sp<Remote> getInstance();
+
 	static const sp<IRemoteService> get_remote_service();
 	static int callRemotePrint(const String16& message);
+	static int setListener(stateCallback_t cb);
 
 private:
 	Remote() ANDROID_API;
 	virtual ~Remote();
+	virtual void onFirstRef();
+
+	virtual void binderDied(const wp<IBinder>& who);
+	virtual status_t onStateChange(int state);
+
+	static Mutex gLock;
+	static sp<Remote> gRemote;
 
 	static sp<IRemoteService> gRemoteService;
 	static Mutex gLockRemote;
+
+	static stateCallback_t gStateCallback;
 };
 
 };

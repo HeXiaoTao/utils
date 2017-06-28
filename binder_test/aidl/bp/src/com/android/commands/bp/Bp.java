@@ -18,14 +18,22 @@ public class Bp {
         (new Bp()).run(args);
     }
 
+    private IRemoteServiceClient mClient = new IRemoteServiceClient.Stub() {
+        public void onStateChange(int state) {
+            System.out.println("Bp onStateChange: " + state);
+        }
+    };
+
     void run(String[] args) {
         IRemoteService remote = IRemoteService.Stub.asInterface(ServiceManager.getService("hexiaotao.remote"));
 
         System.out.println("Bp run: " + remote);
         if(remote != null) {
             try {
-                System.out.println("remote.callRemotePrint() ++ return: "
-                        + remote.callRemotePrint("hello binder"));
+                System.out.println("remote.registerCallback()");
+                remote.registerCallback(mClient);
+				System.out.println("remote.callRemotePrint() ++ return: "
+						+ remote.callRemotePrint("hello binder"));
             } catch(RemoteException e) {
                 System.out.println("Bp run ERROR: " + e);
             }

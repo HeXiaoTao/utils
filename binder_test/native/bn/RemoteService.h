@@ -15,6 +15,7 @@
 #include <binder/BinderService.h>
 
 #include <IRemoteService.h>
+#include <IRemoteServiceClient.h>
 
 namespace android {
 
@@ -32,8 +33,14 @@ public:
 	// IRemoteService interface.
 	//
 	virtual int callRemotePrint(const String16& message);
-	virtual int registerCallback();
-	virtual int unregisterCallback();
+	virtual int registerCallback(const sp<IRemoteServiceClient>& callback);
+	virtual int unregisterCallback(const sp<IRemoteServiceClient>& callback);
+
+private:
+	RemoteService() ANDROID_API;
+	virtual ~RemoteService();
+	virtual void onFirstRef();
+	virtual void binderDied(const wp<IBinder>& who);
 
 	virtual status_t onTransact(
 		uint32_t code,
@@ -41,13 +48,7 @@ public:
 		Parcel* reply,
 		uint32_t flags);
 
-	virtual void binderDied(const wp<IBinder>& who);
-
-	virtual void onFirstRef();
-
-private:
-	RemoteService() ANDROID_API;
-	virtual ~RemoteService();
+	sp<IRemoteServiceClient> mCallback;
 };
 
 };

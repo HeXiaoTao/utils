@@ -16,6 +16,8 @@
 
 namespace android {
 
+class IRemoteServiceClient;
+
 class IRemoteService : public IInterface
 {
 public:
@@ -25,8 +27,8 @@ public:
 	// IRemoteService interface.
 	//
 	virtual int callRemotePrint(const String16& message) = 0;
-	virtual int registerCallback() = 0;
-	virtual int unregisterCallback() = 0;
+	virtual int registerCallback(const sp<IRemoteServiceClient>& callback) = 0;
+	virtual int unregisterCallback(const sp<IRemoteServiceClient>& callback) = 0;
 };
 
 

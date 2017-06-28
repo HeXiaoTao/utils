@@ -7,7 +7,9 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 LOCAL_MODULE := libremote
 LOCAL_CFLAGS := -Wall -Wextra -Werror -Wunused
-LOCAL_SRC_FILES := libremote/IRemoteService.cpp
+LOCAL_SRC_FILES := \
+	libremote/IRemoteService.cpp \
+	libremote/IRemoteServiceClient.cpp
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include/
 LOCAL_SHARED_LIBRARIES := \
 	libbinder \

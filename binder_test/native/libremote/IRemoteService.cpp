@@ -3,7 +3,7 @@
  *
  */
 
-#define LOG_TAG "IRemote"
+#define LOG_TAG "IRemoteService"
 #include <utils/Log.h>
 
 #include <stdint.h>
@@ -12,6 +12,7 @@
 #include <binder/Parcel.h>
 
 #include <IRemoteService.h>
+#include <IRemoteServiceClient.h>
 
 namespace android {
 
@@ -42,10 +43,11 @@ public:
 		return (int)(reply.readInt32());
 	}
 
-	virtual int registerCallback()
+	virtual int registerCallback(const sp<IRemoteServiceClient>& callback)
 	{
 		Parcel data, reply;
 		data.writeInterfaceToken(IRemoteService::getInterfaceDescriptor());
+		data.writeStrongBinder(IInterface::asBinder(callback));
 		status_t status = remote()->transact(REGISTER_CALLBACK, data, &reply);
 		if (status != NO_ERROR) {
 			return -1;
@@ -54,10 +56,11 @@ public:
 		return (int)reply.readInt32();
 	}
 
-	virtual int unregisterCallback()
+	virtual int unregisterCallback(const sp<IRemoteServiceClient>& callback)
 	{
 		Parcel data, reply;
 		data.writeInterfaceToken(IRemoteService::getInterfaceDescriptor());
+		data.writeStrongBinder(IInterface::asBinder(callback));
 		status_t status = remote()->transact(UNREGISTER_CALLBACK, data, &reply);
 		if (status != NO_ERROR) {
 			return -1;
@@ -84,13 +87,15 @@ status_t BnRemoteService::onTransact(
 
 	case REGISTER_CALLBACK: {
 		CHECK_INTERFACE(IRemoteService, data, reply);
-		reply->writeInt32(static_cast <uint32_t>(registerCallback()));
+		sp<IRemoteServiceClient> client = interface_cast<IRemoteServiceClient>(data.readStrongBinder());
+		reply->writeInt32(static_cast <uint32_t>(registerCallback(client)));
 		return NO_ERROR;
 	} break;
 
 	case UNREGISTER_CALLBACK: {
 		CHECK_INTERFACE(IRemoteService, data, reply);
-		reply->writeInt32(static_cast <uint32_t>(unregisterCallback()));
+		sp<IRemoteServiceClient> client = interface_cast<IRemoteServiceClient>(data.readStrongBinder());
+		reply->writeInt32(static_cast <uint32_t>(unregisterCallback(client)));
 		return NO_ERROR;
 	} break;
 

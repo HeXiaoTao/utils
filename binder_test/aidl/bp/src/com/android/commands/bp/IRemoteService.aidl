@@ -1,10 +1,12 @@
 package com.android.commands.bp;
 
+import com.android.commands.bp.IRemoteServiceClient;
+
 interface IRemoteService
 {
     int callRemotePrint(String message);
 
-    int registerCallback();
+    int registerCallback(IRemoteServiceClient cb);
 
-    int unregisterCallback();
+    int unregisterCallback(IRemoteServiceClient cb);
 }
