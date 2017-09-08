@@ -1,0 +1,17 @@
+LOCAL_PATH:= $(call my-dir)
+include $(CLEAR_VARS)
+
+LOCAL_CFLAGS := -O2 -Wall -Wextra -std=c99
+
+LOCAL_SRC_FILES:= test_sx1276_spi.c
+
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../libloragw/inc
+
+LOCAL_MODULE:= test_sx1276_spi
+
+LOCAL_STATIC_LIBRARIES := libloragw
+
+LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
+LOCAL_MODULE_TAGS := debug
+
+include $(BUILD_EXECUTABLE)
