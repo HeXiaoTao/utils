@@ -301,8 +301,9 @@ double SX1276LoRaGetPacketRssi( void )
     return RxPacketRssiValue;
 }
 
-void SX1276LoRaStartRx( void )
+void SX1276LoRaStartRx( long timeout)
 {
+    LoRaSettings.RxPacketTimeout = timeout;
     SX1276LoRaSetRFState( RFLR_STATE_RX_INIT );
 }
 
@@ -650,11 +651,13 @@ uint32_t SX1276LoRaProcess( void )
     case RFLR_STATE_CAD_RUNNING:
         if(DIO0(-2) == 1 ) //CAD Done interrupt
         {
+            // Clear Irq
+            SX1276Write( REG_LR_IRQFLAGS, RFLR_IRQFLAGS_CADDONE );
             SX1276Read( REG_LR_IRQFLAGS, &SX1276LR->RegIrqFlags );
             if( ( SX1276LR->RegIrqFlags & RFLR_IRQFLAGS_CADDETECTED_MASK ) == RFLR_IRQFLAGS_CADDETECTED )
             {
                 // Clear Irq
-                SX1276Write( REG_LR_IRQFLAGS, RFLR_IRQFLAGS_CADDETECTED  );
+                SX1276Write( REG_LR_IRQFLAGS, RFLR_IRQFLAGS_CADDETECTED );
                 // CAD detected, we have a LoRa preamble
                 RFLRState = RFLR_STATE_RX_INIT;
                 result = RF_CHANNEL_ACTIVITY_DETECTED;

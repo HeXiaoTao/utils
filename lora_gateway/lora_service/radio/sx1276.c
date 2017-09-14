@@ -103,9 +103,9 @@ double SX1276GetPacketRssi(void)
 	return SX1276LoRaGetPacketRssi();
 }
 
-void SX1276StartRx(void)
+void SX1276StartRx(long timeout)
 {
-	SX1276LoRaSetRFState(RFLR_STATE_RX_INIT);
+	SX1276LoRaStartRx(timeout);
 }
 
 void SX1276StartCad(void)

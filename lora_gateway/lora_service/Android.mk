@@ -50,9 +50,39 @@ include $(BUILD_STATIC_LIBRARY)
 
 #-----------------------------------------------------
 include $(CLEAR_VARS)
+LOCAL_CFLAGS := -O2 -Wall -Wextra -std=c99
+
+LOCAL_SRC_FILES := crc/crc16.c
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/inc/crc
+
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE:= liblora.crc
+include $(BUILD_STATIC_LIBRARY)
+
+#-----------------------------------------------------
+include $(CLEAR_VARS)
 
 LOCAL_CFLAGS := -O2 -Wall -Wextra -Werror -std=c99
-LOCAL_SRC_FILES := lora.c
+LOCAL_SRC_FILES := lora_mac.c
+
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/inc
+
+LOCAL_REQUIRED_MODULES := libfixqueue liblora.radio liblora.platform libloragw liblora.crc
+LOCAL_SHARED_LIBRARIES := libutils
+LOCAL_STATIC_LIBRARIES := libcutils libfixqueue liblora.radio liblora.platform libloragw liblora.crc
+LOCAL_LDLIBS += -ldl -lm -llog
+LOCAL_MODULE := loraservice
+LOCAL_MODULE_TAGS := optional
+LOCAL_CERTIFICATE := platform
+# LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
+include $(BUILD_EXECUTABLE)
+#-----------------------------------------------------
+
+#-----------------------------------------------------
+include $(CLEAR_VARS)
+
+LOCAL_CFLAGS := -O2 -Wall -Wextra -Werror -std=c99
+LOCAL_SRC_FILES := test/lora_ping.c
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/inc
 
@@ -60,7 +90,7 @@ LOCAL_REQUIRED_MODULES := libfixqueue liblora.radio liblora.platform libloragw
 LOCAL_SHARED_LIBRARIES := libutils
 LOCAL_STATIC_LIBRARIES := libcutils libfixqueue liblora.radio liblora.platform libloragw
 LOCAL_LDLIBS += -ldl -lm -llog
-LOCAL_MODULE := loraflinger
+LOCAL_MODULE := lora_ping
 LOCAL_MODULE_TAGS := optional
 LOCAL_CERTIFICATE := platform
 # LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)

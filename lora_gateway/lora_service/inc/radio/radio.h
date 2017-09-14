@@ -52,7 +52,7 @@ typedef struct sRadioDriver
 {
     void ( *Init )( void );
     void ( *Reset )( void );
-    void ( *StartRx )( void );
+    void ( *StartRx )( long timeout );
     void ( *StartCad )( void );
     void ( *GetRxPacket )( void *buffer, uint16_t *size );
     void ( *SetTxPacket )( const void *buffer, uint16_t size );

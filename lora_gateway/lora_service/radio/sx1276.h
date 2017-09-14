@@ -101,7 +101,7 @@ uint32_t SX1276GetPacketAfc( void );
 /*!
  * \brief Sets the radio in Rx mode. Waiting for a packet
  */
-void SX1276StartRx(void);
+void SX1276StartRx(long timeout);
 
 void SX1276StartCad(void);
 

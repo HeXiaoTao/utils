@@ -67,11 +67,22 @@ static void inline sx12xx_tx_rx_ctrl(uint8_t rx_tx)
 	}
 }
 
+static void cleanup_handler(void *arg)
+{
+	pthread_mutex_t *p = arg;
+    pthread_mutex_unlock(p);
+}
+
 void wakeup_by_xmit()
 {
 	DBGPRINT(DEBUG_TRACE, "wakeup_by_xmit");
+
+	pthread_cleanup_push(cleanup_handler, &dio_0_poll_mutex);
+	pthread_mutex_lock(&dio_0_poll_mutex);
 	need_tx = 1;
 	pthread_cond_signal(&dio_0_poll_cond);
+	pthread_mutex_unlock(&dio_0_poll_mutex);
+	pthread_cleanup_pop(0);
 }
 
 void dio_eint_callback(int s)
@@ -80,7 +91,9 @@ void dio_eint_callback(int s)
 	case SIGIO:
 		/*do the job when catch the sigwait*/
 		DBGPRINT(DEBUG_TRACE, "\nsigwait, receive signal: %d", s);
+		pthread_mutex_lock(&dio_0_poll_mutex);
 		pthread_cond_signal(&dio_0_poll_cond);
+		pthread_mutex_unlock(&dio_0_poll_mutex);
 		break;
 	default:
 		break;
@@ -218,12 +231,6 @@ void SX1276ReadFifo(uint8_t *buffer, uint8_t size)
 	SX1276ReadBuffer(0, buffer, size);
 }
 
-
-static void cleanup_handler(void *arg) {
-	pthread_mutex_t *p = arg;
-    pthread_mutex_unlock(p);
-}
-
 static uint8_t inline get_dio_x_value(uint8_t x)
 {
 	uint32_t gpio_map = 0xFFFFFFFF;
@@ -250,7 +257,7 @@ uint8_t SX1276ReadDio0(int timeout)
 
 	pthread_cleanup_push(cleanup_handler, &dio_0_poll_mutex);
 	pthread_mutex_lock(&dio_0_poll_mutex);
-	while(!(dio_0 = get_dio_x_value(0))) {
+	while(!(dio_0 = get_dio_x_value(0)) && !need_tx) {
 		if(timeout > 0) {
 			gettimeofday(&t, NULL);
 			ts.tv_sec = t.tv_sec;
@@ -265,22 +272,21 @@ uint8_t SX1276ReadDio0(int timeout)
 			DBGPRINT(DEBUG_TRACE, "+%s cond_timedwait: ret=%d dio_0=%d need_tx=%d (%ld/%d)ms", __FUNCTION__,
 							ret, dio_0, need_tx, begain_time, timeout);
 			timeout = timeout - begain_time;
-			if(need_tx || timeout <= 0) {
-				need_tx = 0;
+			if(need_tx || timeout <= 0)
 				break;
-			}
 		} else if(timeout == 0) {
 			break;
 		} else if(timeout < 0) {
 			ret = pthread_cond_wait(&dio_0_poll_cond, &dio_0_poll_mutex);
 			DBGPRINT(DEBUG_TRACE, "+%s cond_wait: ret=%d", __FUNCTION__, ret);
 			dio_0 = get_dio_x_value(0);
-			if((timeout == -1 && need_tx) || dio_0) {
-				need_tx = 0;
+			if((timeout == -1 && need_tx) || dio_0)
 				break;
-			}
 		}
 	}
+
+	need_tx = 0;
+
 	pthread_mutex_unlock(&dio_0_poll_mutex);
 	pthread_cleanup_pop(0);
 

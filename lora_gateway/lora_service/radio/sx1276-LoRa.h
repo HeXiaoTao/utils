@@ -878,7 +878,7 @@ double SX1276LoRaGetPacketRssi( void );
 /*!
  * \brief Sets the radio in Rx mode. Waiting for a packet
  */
-void SX1276LoRaStartRx( void );
+void SX1276LoRaStartRx( long timeout );
 
 /*!
  * \brief Gets a copy of the current received buffer

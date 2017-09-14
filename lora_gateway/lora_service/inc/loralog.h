@@ -5,8 +5,8 @@
  *
  */
 //-------------------------------------------------------------
-#ifndef COMMON_H_
-#define COMMON_H_
+#ifndef _LORALOG_H
+#define _LORALOG_H
 
 #include <cutils/log.h>
 #include <stdlib.h>
@@ -84,4 +84,4 @@ do{						\
 #endif
 
 //##############################################################
-#endif /* COMMON_H_ */
+#endif /* _LORALOG_H */
