@@ -57,7 +57,7 @@ static pthread_cond_t dio_0_poll_cond = PTHREAD_COND_INITIALIZER;
 //dev 0
 static const char *eint_poll_dev_path = "/dev/sx12xx@0";
 
-static void inline sx12xx_tx_rx_ctrl(uint8_t rx_tx)
+static inline void sx12xx_tx_rx_ctrl(uint8_t rx_tx)
 {
 	if(eint_poll_fd >= 0 && (rx_tx == 0 || rx_tx == 1)) {
 		if(ioctl(eint_poll_fd, SX12XX_IOCTL_SET_RXTX, &rx_tx)) {
@@ -231,7 +231,7 @@ void SX1276ReadFifo(uint8_t *buffer, uint8_t size)
 	SX1276ReadBuffer(0, buffer, size);
 }
 
-static uint8_t inline get_dio_x_value(uint8_t x)
+static inline uint8_t get_dio_x_value(uint8_t x)
 {
 	uint32_t gpio_map = 0xFFFFFFFF;
 

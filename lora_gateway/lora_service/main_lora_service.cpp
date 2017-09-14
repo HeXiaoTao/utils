@@ -3,7 +3,7 @@
  *
  */
 
-#define LOG_TAG "bn_native"
+#define LOG_TAG "main_lora_service"
 
 #include <cutils/log.h>
 #include <utils/Log.h>
@@ -16,18 +16,29 @@
 #include <keystore/IKeystoreService.h>
 #include <keystore/keystore.h> // for error codes
 
-#include "RemoteService.h"
+#include "native/bn/RemoteService.h"
+
+#include "lora_mac.h"
+
+using namespace android;
 
 int main() {
 	ALOGI("Starting " LOG_TAG);
 
-	android::RemoteService::instantiate();
+	if(!lora_mac_init()) {
+		ALOGE("lora_mac_init error !!!!!!!!");
+		return -1;
+	}
+
+	sp<ProcessState> proc(ProcessState::self());
+	RemoteService::instantiate();
 
 	/*
 	* We're the only thread in existence, so we're just going to process
 	* Binder transaction as a single-threaded program.
 	*/
-	android::IPCThreadState::self()->joinThreadPool();
+	ProcessState::self()->startThreadPool();
+	IPCThreadState::self()->joinThreadPool();
 	ALOGI("Done");
 	return 0;
 }

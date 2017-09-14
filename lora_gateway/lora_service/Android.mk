@@ -61,15 +61,42 @@ include $(BUILD_STATIC_LIBRARY)
 
 #-----------------------------------------------------
 include $(CLEAR_VARS)
+LOCAL_MODULE := libremote
+LOCAL_CFLAGS := -Wall -Wextra -Werror -Wunused
+LOCAL_SRC_FILES := \
+    native/libremote/IRemoteService.cpp \
+    native/libremote/IRemoteServiceClient.cpp
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/native/include/
+LOCAL_SHARED_LIBRARIES := \
+    libbinder \
+    liblog \
+    libutils \
+    libkeystore_binder
+include $(BUILD_STATIC_LIBRARY)
 
-LOCAL_CFLAGS := -O2 -Wall -Wextra -Werror -std=c99
-LOCAL_SRC_FILES := lora_mac.c
+include $(CLEAR_VARS)
+LOCAL_CFLAGS := -O2 -Wall -Wextra -Werror -Wunused
+LOCAL_SRC_FILES := \
+    main_lora_service.cpp \
+    lora_mac.c \
+    native/bn/RemoteService.cpp
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/inc
-
-LOCAL_REQUIRED_MODULES := libfixqueue liblora.radio liblora.platform libloragw liblora.crc
-LOCAL_SHARED_LIBRARIES := libutils
-LOCAL_STATIC_LIBRARIES := libcutils libfixqueue liblora.radio liblora.platform libloragw liblora.crc
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/inc $(LOCAL_PATH)/native/include
+LOCAL_REQUIRED_MODULES := libfixqueue liblora.radio liblora.platform libloragw liblora.crc libremote
+LOCAL_SHARED_LIBRARIES := \
+    libutils \
+    libbinder \
+    liblog \
+    libutils \
+    libkeystore_binder
+LOCAL_STATIC_LIBRARIES := \
+    libcutils \
+    libfixqueue \
+    liblora.radio \
+    liblora.platform \
+    libloragw \
+    liblora.crc \
+    libremote
 LOCAL_LDLIBS += -ldl -lm -llog
 LOCAL_MODULE := loraservice
 LOCAL_MODULE_TAGS := optional

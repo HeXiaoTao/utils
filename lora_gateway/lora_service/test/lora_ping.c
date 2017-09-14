@@ -91,6 +91,8 @@ static void* rx_queue_resolver(void *arg)
 			pdata_ack = NULL;
 		}
 	}
+
+	return NULL;
 }
 
 static int rx_queue_resolver_init()
@@ -207,6 +209,8 @@ static void* run_state_machine(void *arg)
 			break;
 		}
 	}
+
+	return NULL;
 }
 
 static int stata_machine_init(tRadioDriver *Radio)
